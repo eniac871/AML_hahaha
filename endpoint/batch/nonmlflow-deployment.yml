@@ -1,13 +1,13 @@
 $schema: https://azuremlschemas.azureedge.net/latest/batchDeployment.schema.json
-name: nonmlflowdp
-endpoint_name: mybatchedp
+name: custom_hahaha_model
+endpoint_name: hahaha_edp
 model: 
-  path: ./mnist/model/
+  path: ./custom_model/model/
 code_configuration:
-  code: ./mnist/code/
-  scoring_script: digit_identification.py
+  code: ./custom_model/code/
+  scoring_script: score.py
 environment:
-  conda_file: ./mnist/environment/conda.yml
+  conda_file: ./custom_model/environment/conda.yml
   image: mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04:latest
 compute: azureml:batch-cluster
 resources:
