@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/batchDeployment.schema.json
+name: mlflowdp
+endpoint_name: mybatchedp
+model: 
+  path: ./house_price
+compute: azureml:cpu-cluster
