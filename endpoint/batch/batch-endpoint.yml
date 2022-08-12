@@ -1,4 +1,4 @@
 $schema: https://azuremlschemas.azureedge.net/latest/batchEndpoint.schema.json
-name: hahaha_edp
+name: hahahaedp
 description: my sample batch endpoint
 auth_mode: aad_token
