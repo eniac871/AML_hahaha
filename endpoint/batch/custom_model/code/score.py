@@ -4,6 +4,7 @@ import numpy as np
 import xgboost as xgb
 from PIL import Image
 import pandas as pd
+import mlflow
 from azureml.core import Model
 
 
@@ -16,18 +17,22 @@ def init():
     model_path = os.path.join(os.environ["AZUREML_MODEL_DIR"], "model.json")
 
     # model_path = "../model/model.json"
-    print(os.listdir(os.environ["AZUREML_MODEL_DIR"]))
+    #mlflow.log_text( os.listdir(os.environ["AZUREML_MODEL_DIR"]), "custome_log.txt")
     xgb_model = xgb.Booster()
     xgb_model.load_model(model_path)
 
    
 def run(mini_batch):
+
+    #mlflow.log_text(mini_batch, "minibatch.txt")
     print(f"run method start: {__file__}, run({mini_batch})")
     resultList = []
 
     for line in mini_batch:
+        #mlflow.log_text(line, "minibatch.txt")
         data_to_test = pd.read_csv(line)
-        test_predict = xgb_model.predict(data_to_test)
+        xgbdata = xgb.DMatrix(data_to_test)
+        test_predict = xgb_model.predict(xgbdata)
         resultList += test_predict.tolist()
     return resultList
     
