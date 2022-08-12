@@ -1,0 +1,22 @@
+# <component>
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: prepare_house_price_data
+display_name: PrepData
+version: 1
+type: command
+inputs:
+  raw_data: 
+    type: uri_folder 
+outputs:
+  prep_data:
+    type: uri_folder
+  price_data:
+    type: uri_folder
+code: ./prep_src
+environment: azureml:docker-context-example:1
+command: >-
+  python prep.py 
+  --raw_data ${{inputs.raw_data}} 
+  --prep_data ${{outputs.prep_data}}
+  --price_data ${{outputs.price_data}}
+# </component>

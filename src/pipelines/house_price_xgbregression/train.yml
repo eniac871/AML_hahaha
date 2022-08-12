@@ -1,0 +1,22 @@
+# <component>
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: train_xgb_model
+display_name: train_xgb_model
+version: 1
+type: command
+inputs:
+  training_data: 
+    type: uri_folder
+  price_data: 
+    type: uri_folder
+outputs:
+  model_output:
+    type: mlflow_model
+code: ./train_src
+environment: azureml:train-context:1
+command: >-
+  python train.py 
+  --training_data ${{inputs.training_data}} 
+  --price_data ${{inputs.price_data}} 
+  --model_output ${{outputs.model_output}}
+# </component>
