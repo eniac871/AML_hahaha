@@ -14,12 +14,12 @@ def init():
     # AZUREML_MODEL_DIR is an environment variable created during deployment
     # It is the path to the model folder (./azureml-models)
     # Please provide your model's folder name if there's one
-    model_path = os.path.join(os.environ["AZUREML_MODEL_DIR"], "model.json")
+    # model_path = os.path.join(os.environ["AZUREML_MODEL_DIR"], "model.json")
 
-    # model_path = "f:/AML_HAHAHA/model.json"
+    model_path = "C:/code/AML_hahaha/endpoint/batch/custom_model/model/modelforDummies.model"
     #mlflow.log_text( os.listdir(os.environ["AZUREML_MODEL_DIR"]), "custome_log.txt")
-    xgb_model = xgb.Booster()
-    xgb_model.load_model(model_path)
+    xgb_model = xgb.Booster(model_file='C:/code/AML_hahaha/endpoint/batch/custom_model/model/modelforDummies.model')
+    # xgb_model.load_model(model_path)
 
    
 def run(mini_batch):
@@ -98,11 +98,11 @@ def run(mini_batch):
 
     # return resultList
 
-# def predict_data():
-#     # testdata = pd.read_csv("../../endpoint_data/test_dummies.csv")
-#     run(["F:\AML_hahaha\data\house-prices-advanced-regression-techniques\\test.csv"])
+def predict_data():
+    testdata = pd.read_csv("C:/code/AML_hahaha/endpoint/batch/endpoint_data/test_dummies.csv")
+    run(["C:/code/AML_hahaha/data/house-prices-advanced-regression-techniques/test.csv"])
 
 
-# init()
+init()
 
-# predict_data()
+predict_data()
