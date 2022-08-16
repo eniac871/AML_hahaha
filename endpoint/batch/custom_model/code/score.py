@@ -14,11 +14,11 @@ def init():
     # AZUREML_MODEL_DIR is an environment variable created during deployment
     # It is the path to the model folder (./azureml-models)
     # Please provide your model's folder name if there's one
-    # model_path = os.path.join(os.environ["AZUREML_MODEL_DIR"], "model.json")
+    model_path = os.path.join(os.environ["AZUREML_MODEL_DIR"], "modelforDummies.model")
 
-    model_path = "C:/code/AML_hahaha/endpoint/batch/custom_model/model/modelforDummies.model"
+    #model_path = "C:/code/AML_hahaha/endpoint/batch/custom_model/model/modelforDummies.model"
     #mlflow.log_text( os.listdir(os.environ["AZUREML_MODEL_DIR"]), "custome_log.txt")
-    xgb_model = xgb.Booster(model_file='C:/code/AML_hahaha/endpoint/batch/custom_model/model/modelforDummies.model')
+    xgb_model = xgb.Booster(model_file=model_path)
     # xgb_model.load_model(model_path)
 
    
@@ -31,6 +31,7 @@ def run(mini_batch):
     for line in mini_batch:
         #mlflow.log_text(line, "minibatch.txt")
         test = pd.read_csv(line)
+        testId = test['Id']
 
         # data cleanup
         test.drop("Id", axis=1, inplace=True)
@@ -81,8 +82,23 @@ def run(mini_batch):
 
         xgbdata = xgb.DMatrix(test_dummies)
         test_predict = xgb_model.predict(xgbdata)
-        resultList += test_predict.tolist()
-    return resultList
+
+        q1 = pd.DataFrame(test_predict).quantile(0.0042)
+        pre_df = pd.DataFrame(test_predict)
+        pre_df["SalePrice"] = test_predict
+        pre_df = pre_df[["SalePrice"]]
+        pre_df.loc[pre_df.SalePrice <= q1[0], "SalePrice"] = pre_df.loc[pre_df.SalePrice <= q1[0], "SalePrice"] *0.96
+        test_predict = np.array(pre_df.SalePrice)
+        test_predict = np.exp(test_predict)-1
+        
+        ans_Price = pd.DataFrame(test_predict, columns=['SalePrice'])
+        ans_Id = pd.DataFrame(testId)
+        ans_result = pd.concat([ans_Id, ans_Price], axis=1)
+        final_output = pd.DataFrame(columns=['Id', 'SalePrice'])
+        final_output.loc[0]=['Id', 'SalePrice']
+        final_output = pd.concat([final_output, ans_result], axis=0)
+
+    return final_output
     
 
     # for line in mini_batch:
@@ -98,11 +114,12 @@ def run(mini_batch):
 
     # return resultList
 
-def predict_data():
-    testdata = pd.read_csv("C:/code/AML_hahaha/endpoint/batch/endpoint_data/test_dummies.csv")
-    run(["C:/code/AML_hahaha/data/house-prices-advanced-regression-techniques/test.csv"])
+#def predict_data():
+   #testdata = pd.read_csv("C:/code/AML_hahaha/endpoint/batch/endpoint_data/test_dummies.csv")
+   #ans = run(["C:/code/AML_hahaha/data/house-prices-advanced-regression-techniques/test.csv"])
+   #ans.to_csv("1.csv", index=False)
 
 
-init()
+#init()
 
-predict_data()
+#predict_data()
